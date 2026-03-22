@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leia SP — Tempo Semanal · URE Caieiras</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@1,300&display=swap');
+
+  :root {
+    --navy:    #1A3A5C;
+    --navy-dk: #0F2540;
+    --gold:    #C8922A;
+    --gold-lt: #FFF8EE;
+    --teal:    #1E7A7A;
+    --teal-lt: #E8F5F5;
+    --green:   #1E7A44;
+    --green-lt:#EAF5EE;
+    --red:     #C0392B;
+    --red-lt:  #FDEEEC;
+    --red-mid: #F5B7B1;
+    --yellow:  #D4860A;
+    --yellow-lt:#FFF8E1;
+    --yellow-bd:#F0D070;
+    --gray:    #5A6B7A;
+    --lt:      #F7F8FA;
+    --border:  #E2E8F0;
+    --white:   #ffffff;
+    --text:    #1A2733;
+    --radius:  14px;
+    --shadow:  0 2px 16px rgba(26,58,92,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #DDE4EF;
+    min-height: 100vh;
+    padding: 24px 12px 40px;
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    max-width: 680px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 22px 24px 18px;
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .badge-org {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 1.6px;
+    color: #94B8D8; text-transform: uppercase;
+  }
+  .platform-tag {
+    margin-left: auto;
+    background: var(--gold); color: #fff;
+    font-size: 10px; font-weight: 800;
+    padding: 4px 12px; border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .header h1 {
+    font-size: clamp(18px, 5vw, 24px);
+    font-weight: 900; color: #fff; line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header h1 span { color: var(--gold); }
+  .header-sub {
+    font-family: 'Merriweather', serif;
+    font-style: italic; font-weight: 300;
+    font-size: 12px; color: #94B8D8;
+    margin-bottom: 14px;
+  }
+  .meta-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .meta-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(200,146,42,0.5);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 11px; font-weight: 700; color: #F0D090;
+  }
+  .meta-chip svg { flex-shrink: 0; }
+
+  /* ── SEÇÕES ── */
+  .section { padding: 18px 22px; }
+  .section-title {
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--gray); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .divider { border: none; border-top: 1px solid var(--border); }
+
+  /* ── REGRA BOX ── */
+  .rule-box {
+    background: var(--teal-lt);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px; margin-bottom: 16px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .rule-icon {
+    width: 46px; height: 46px; flex-shrink: 0;
+    background: var(--teal); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: #fff;
+  }
+  .rule-text strong {
+    display: block; font-size: 15px; font-weight: 800;
+    color: var(--teal); margin-bottom: 4px;
+  }
+  .rule-text p { font-size: 12.5px; color: #2a5858; line-height: 1.6; }
+
+  /* ── SEMANA VISUAL ── */
+  .week-wrap { padding: 0 2px 4px; }
+  .week-label { font-size: 11px; font-weight: 700; color: var(--gray); margin-bottom: 8px; }
+  .week-bars {
+    display: flex; align-items: flex-end; gap: 3px; height: 36px;
+  }
+  .day-bar {
+    flex: 1; border-radius: 4px 4px 0 0;
+    background: var(--border); min-height: 5px;
+    transition: background 0.3s;
+  }
+  .day-bar.active { background: var(--teal); }
+  .day-labels {
+    display: flex; gap: 3px; margin-top: 4px;
+  }
+  .day-labels span {
+    flex: 1; text-align: center;
+    font-size: 9.5px; font-weight: 700; color: var(--gray);
+  }
+  .week-note {
+    font-size: 11.5px; color: var(--gray);
+    margin-top: 8px; line-height: 1.6;
+  }
+  .week-note strong { color: var(--navy); font-weight: 800; }
+
+  /* ── CHIPS RESUMO ── */
+  .summary-chips {
+    display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .chip {
+    padding: 5px 13px; border-radius: 20px;
+    font-size: 11.5px; font-weight: 700;
+  }
+  .chip-red    { background: var(--red-lt); color: var(--red); border: 1px solid var(--red-mid); }
+  .chip-yellow { background: var(--yellow-lt); color: var(--yellow); border: 1px solid var(--yellow-bd); }
+  .chip-green  { background: var(--green-lt); color: var(--green); border: 1px solid #A8D5BB; }
+
+  /* ── FILTROS ── */
+  .filter-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filter-btn {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11.5px; font-weight: 700;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--white); color: var(--gray);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #94a3b8; }
+  .filter-btn.f-all    { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .filter-btn.f-red    { background: var(--red-lt); border-color: var(--red-mid); color: var(--red); }
+  .filter-btn.f-yellow { background: var(--yellow-lt); border-color: var(--yellow-bd); color: var(--yellow); }
+
+  /* ── BUSCA ── */
+  .search-wrap {
+    position: relative; margin-bottom: 12px;
+  }
+  .search-wrap svg {
+    position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%); pointer-events: none;
+  }
+  .search-input {
+    font-family: 'Nunito', sans-serif;
+    width: 100%; padding: 8px 12px 8px 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px; font-size: 12.5px;
+    color: var(--text); background: var(--lt);
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--teal); background: #fff; }
+  .search-input::placeholder { color: #94a3b8; }
+
+  /* ── LISTA ESCOLAS ── */
+  .school-list { display: flex; flex-direction: column; gap: 6px; }
+  .no-results {
+    text-align: center; padding: 24px;
+    color: var(--gray); font-size: 13px; font-style: italic;
+  }
+
+  .school-wrap { border-radius: 10px; overflow: hidden; }
+
+  .school-item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--lt); padding: 9px 12px;
+    cursor: pointer; user-select: none;
+    border: 1px solid transparent;
+    transition: border-color 0.18s, background 0.18s;
+    border-radius: 10px;
+  }
+  .school-item:hover { border-color: var(--border); }
+  .school-item.open {
+    background: var(--red-lt);
+    border-color: var(--red-mid);
+    border-radius: 10px 10px 0 0;
+  }
+
+  .school-dot {
+    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-red    { background: var(--red); }
+  .dot-yellow { background: #F0A500; }
+
+  .school-name {
+    flex: 1; font-size: 12px; font-weight: 700;
+    color: var(--navy);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .bar-wrap {
+    width: 80px; flex-shrink: 0;
+    background: var(--border); border-radius: 5px; height: 6px;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+  .bar-red    { background: linear-gradient(90deg, #C0392B, #E74C3C); }
+  .bar-yellow { background: linear-gradient(90deg, #D4860A, #F4B942); }
+
+  .school-min {
+    font-size: 12px; font-weight: 800;
+    min-width: 46px; text-align: right; flex-shrink: 0;
+  }
+  .min-red    { color: var(--red); }
+  .min-yellow { color: var(--yellow); }
+
+  .chevron {
+    font-size: 11px; color: var(--gray); flex-shrink: 0;
+    transition: transform 0.25s;
+  }
+  .school-item.open .chevron { transform: rotate(180deg); }
+
+  /* ── DETALHE ── */
+  .school-detail {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+    background: var(--red-lt);
+    border: 1px solid var(--red-mid); border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 0 14px 0 28px;
+  }
+  .school-detail.open {
+    max-height: 200px;
+    padding: 10px 14px 14px 28px;
+  }
+  .detail-row {
+    font-size: 12px; color: var(--gray);
+    line-height: 1.75;
+  }
+  .detail-row strong { color: var(--navy); font-weight: 700; }
+  .detail-row .hl-red    { color: var(--red); font-weight: 800; }
+  .detail-row .hl-yellow { color: var(--yellow); font-weight: 800; }
+  .detail-tip {
+    margin-top: 8px; padding: 7px 10px;
+    background: var(--white); border-radius: 8px;
+    border-left: 3px solid var(--teal);
+    font-size: 12px; font-weight: 700; color: var(--teal);
+    line-height: 1.5;
+  }
+
+  /* ── BARRA PROGRESSO SEMANAL (animada) ── */
+  .progress-week {
+    margin-top: 10px;
+  }
+  .pw-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--gray); margin-bottom: 4px; font-weight: 600;
+  }
+  .pw-track {
+    height: 8px; background: var(--border); border-radius: 6px; overflow: hidden;
+  }
+  .pw-fill {
+    height: 100%; border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  /* ── ESTRATÉGIAS ── */
+  .tip-box {
+    background: var(--green-lt);
+    border-left: 4px solid var(--green);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px;
+  }
+  .tip-item { margin-bottom: 12px; font-size: 12.5px; line-height: 1.65; color: #1B4D30; }
+  .tip-item:last-child { margin-bottom: 0; }
+  .tip-item strong { font-weight: 800; display: block; margin-bottom: 2px; color: var(--green); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--lt); border-top: 1px solid var(--border);
+    padding: 11px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 6px;
+    font-size: 11px; color: var(--gray);
+  }
+  .footer a { color: var(--teal); font-weight: 700; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ── CONTADOR VISÍVEL ── */
+  .count-note {
+    font-size: 11px; color: var(--gray);
+    margin-bottom: 10px; text-align: right;
+  }
+  .count-note span { font-weight: 700; color: var(--navy); }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <span class="badge-org">URE Caieiras · Especialistas em Currículo</span>
+      <span class="platform-tag">Leia SP</span>
+    </div>
+    <h1>Atenção ao <span>tempo semanal</span><br>de leitura</h1>
+    <p class="header-sub">Um olhar cuidadoso sobre o engajamento da sua escola na plataforma</p>
+    <div class="meta-chips">
+      <div class="meta-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        25 min/semana por aluno
+      </div>
+      <div class="meta-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Contabilização semanal
+      </div>
+      <div class="meta-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        Referência: semana anterior
+      </div>
+    </div>
+  </div>
+
+  <!-- COMO FUNCIONA -->
+  <div class="section">
+    <div class="section-title">Como funciona a contabilização</div>
+    <div class="rule-box">
+      <div class="rule-icon">25</div>
+      <div class="rule-text">
+        <strong>25 minutos por semana, por estudante</strong>
+        <p>A plataforma contabiliza o tempo de leitura acumulado de <strong>segunda a domingo</strong>. O dado é zerado a cada início de semana — cada semana é uma nova oportunidade de engajamento.</p>
+      </div>
+    </div>
+    <div class="week-wrap">
+      <div class="week-label">Exemplo: como distribuir os 25 min ao longo da semana</div>
+      <div class="week-bars">
+        <div class="day-bar" style="height:40%"></div>
+        <div class="day-bar" style="height:55%"></div>
+        <div class="day-bar active" style="height:75%"></div>
+        <div class="day-bar active" style="height:60%"></div>
+        <div class="day-bar active" style="height:85%"></div>
+        <div class="day-bar" style="height:30%"></div>
+        <div class="day-bar" style="height:20%"></div>
+      </div>
+      <div class="day-labels">
+        <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+      </div>
+      <p class="week-note">Os dias em azul representam dias com leitura registrada. Não precisa ser todos os dias — o que importa é <strong>chegar aos 25 min até domingo.</strong></p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ESCOLAS -->
+  <div class="section">
+    <div class="section-title">Escolas com atenção necessária</div>
+
+    <div class="summary-chips">
+      <span class="chip chip-red" id="chip-red"></span>
+      <span class="chip chip-yellow" id="chip-yellow"></span>
+      <span class="chip chip-green">Meta: 25 min/aluno/semana</span>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-btn f-all" onclick="setFilter('all',this)">Todas</button>
+      <button class="filter-btn" onclick="setFilter('red',this)">Abaixo de 15 min</button>
+      <button class="filter-btn" onclick="setFilter('yellow',this)">Entre 15 e 25 min</button>
+    </div>
+
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="search" type="text" placeholder="Buscar escola..." oninput="renderList()">
+    </div>
+
+    <div class="count-note" id="count-note"></div>
+    <div class="school-list" id="school-list"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ESTRATÉGIAS -->
+  <div class="section">
+    <div class="section-title">Estratégias de apoio</div>
+    <div class="tip-box">
+      <div class="tip-item">
+        <strong>📖 Leitura livre nos 10 minutos iniciais da aula</strong>
+        Em 3 aulas por semana, já somam os 25 minutos necessários — sem nenhum esforço extra de planejamento.
+      </div>
+      <div class="tip-item">
+        <strong>🏠 Combine leitura em casa com registro na plataforma</strong>
+        Lembrar os estudantes de registrar o que já leram é uma ação de baixo custo e alto impacto no indicador semanal.
+      </div>
+      <div class="tip-item">
+        <strong>📚 Explore o acervo da plataforma em sala</strong>
+        Apresentar novos títulos e gêneros aumenta o engajamento espontâneo, especialmente de quem ainda não formou o hábito de leitura.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>URE Caieiras · Dados: semana anterior · Leia SP 2026</span>
+    <a href="https://leiasp.educacao.sp.gov.br" target="_blank">Acessar plataforma →</a>
+  </div>
+
+</div>
+
+<script>
+const ESCOLAS = [
+  {n:"VINCENZO LOBASSI",m:0.26,mat:459},
+  {n:"JOCIMARA VIEIRA DA SILVA PROFA",m:1.91,mat:1211},
+  {n:"JOSE PARADA PROFESSOR",m:2.20,mat:703},
+  {n:"CHACARA CAMPONESA JARDIM VASSOURAS",m:2.38,mat:939},
+  {n:"DR. MARIO TOLEDO DE MORAES",m:2.52,mat:1292},
+  {n:"JARDIM DAS ROSAS",m:4.26,mat:1040},
+  {n:"JOAQUIM MARQUES DA SILVA SOBRINHO TTE",m:4.44,mat:306},
+  {n:"ALADINO POLON",m:4.57,mat:222},
+  {n:"APARECIDO ROBERTO TONELLOTTI PROFESSOR",m:4.67,mat:947},
+  {n:"PEDRO LELIS DE SOUZA PREFEITO",m:5.30,mat:389},
+  {n:"ELCIO JOSE PEREIRA COTRIM PROF",m:5.74,mat:563},
+  {n:"JARDIM SILVIA II",m:7.48,mat:1631},
+  {n:"ROGERIO LEVORIN PROF",m:7.67,mat:1656},
+  {n:"IRACI SARTORI VIEIRA DA SILVA PROFA",m:7.73,mat:727},
+  {n:"WALTER RIBAS DE ANDRADE PROF",m:7.87,mat:251},
+  {n:"ANA MARIA GARRIDO ORLANDIN PROFA",m:8.00,mat:687},
+  {n:"SUZANA DIAS",m:8.43,mat:400},
+  {n:"ELVIRA PARADA MANGA PROFA",m:8.86,mat:632},
+  {n:"RITUCO MITANI PROFA",m:9.08,mat:837},
+  {n:"ISAIAS LUIZ MATIAZZO",m:9.20,mat:253},
+  {n:"BUENO DE AZEVEDO FILHO PROF",m:9.35,mat:966},
+  {n:"OZILDE ALBUQUERQUE PASSARELLA DR",m:9.36,mat:489},
+  {n:"PIETRO PETRI",m:9.50,mat:828},
+  {n:"ALBERTO GRAF CAPITAO",m:9.80,mat:713},
+  {n:"HERMELINA DE ALBUQUERQUE PASSARELLA PROFA",m:9.83,mat:833},
+  {n:"ULYSSES SANCHES RAMIRES PROF",m:10.50,mat:419},
+  {n:"BENEDITO FAGUNDES MARQUES",m:10.53,mat:691},
+  {n:"JOSE DE BARROS MARTINS EDITOR",m:11.05,mat:1069},
+  {n:"KATIA MARIA TARIFA LEME TONELLI PROFA",m:11.06,mat:1198},
+  {n:"AZEVEDO SOARES",m:11.29,mat:554},
+  {n:"FRANCISCO GONCALVES VIEIRA PROF",m:11.81,mat:472},
+  {n:"PAULO DUARTE",m:11.89,mat:891},
+  {n:"NAIR HANNICKEL ROMARO",m:12.18,mat:329},
+  {n:"LYDIA SCALET WALKER PROFA",m:12.21,mat:263},
+  {n:"AFONSO MORENO",m:12.38,mat:1193},
+  {n:"JARDIM ALEGRIA II",m:12.43,mat:1235},
+  {n:"OLINDO DARTORA DR",m:12.63,mat:196},
+  {n:"OTTO WEISZFLOG",m:12.73,mat:780},
+  {n:"ISAURA DE MIRANDA BOTTO PROFA",m:13.11,mat:646},
+  {n:"JOSE CARLOS DA SILVA JUNIOR",m:13.45,mat:594},
+  {n:"BAIRRO JUNDIAIZINHO",m:13.85,mat:465},
+  {n:"NIDE ZAIM CARDOSO PROFA",m:15.02,mat:619},
+  {n:"PARQUE CENTO E VINTE II",m:15.20,mat:1387},
+  {n:"DR. NELSON MANZANARES",m:15.65,mat:491},
+  {n:"ALFRIED THEODOR WEISZFLOG",m:15.87,mat:481},
+  {n:"JARDIM SAO FRANCISCO",m:17.01,mat:358},
+  {n:"ZILTON BICUDO PROF",m:17.02,mat:973},
+  {n:"ADAIL JARBAS DUCLOS",m:17.20,mat:409},
+  {n:"PEDRO PAULO DE AGUIAR",m:17.42,mat:1412},
+  {n:"IVONE DOS ANJOS DA SILVA CAMPOS PROFA",m:17.82,mat:902},
+  {n:"ARMANDO SESTINI",m:18.07,mat:551},
+  {n:"ISAURA VALENTINI HANSER PROFA",m:19.43,mat:268},
+  {n:"PEDRO GALRAO DO NASCIMENTO",m:20.82,mat:203},
+  {n:"DOMINGOS CAMBIAGHI PROF",m:20.46,mat:528},
+  {n:"JOSE ROBERTO MELCHIOR DR",m:21.37,mat:640},
+  {n:"ODARICO OLIVEIRA NASCIMENTO PROF",m:22.54,mat:318},
+].sort((a,b)=>a.m-b.m);
+
+const META = 25;
+const countRed    = ESCOLAS.filter(e=>e.m<15).length;
+const countYellow = ESCOLAS.filter(e=>e.m>=15).length;
+
+document.getElementById('chip-red').textContent    = countRed + ' escolas abaixo de 15 min';
+document.getElementById('chip-yellow').textContent = countYellow + ' escolas entre 15 e 25 min';
+
+let currentFilter = 'all';
+let openId = null;
+
+function tier(m){ return m < 15 ? 'red' : 'yellow'; }
+
+function toTitle(str){
+  return str.toLowerCase().replace(/\b(\w)/g, c => c.toUpperCase());
+}
+
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    b.className = 'filter-btn';
+  });
+  btn.classList.add('f-' + f);
+  openId = null;
+  renderList();
+}
+
+function renderList(){
+  const q     = document.getElementById('search').value.toLowerCase().trim();
+  const list  = document.getElementById('school-list');
+  const note  = document.getElementById('count-note');
+
+  let items = ESCOLAS;
+  if(currentFilter === 'red')    items = items.filter(e => e.m <  15);
+  if(currentFilter === 'yellow') items = items.filter(e => e.m >= 15);
+  if(q) items = items.filter(e => e.n.toLowerCase().includes(q));
+
+  note.innerHTML = `Mostrando <span>${items.length}</span> escola${items.length!==1?'s':''}`;
+
+  if(!items.length){
+    list.innerHTML = '<p class="no-results">Nenhuma escola encontrada.</p>';
+    return;
+  }
+
+  list.innerHTML = '';
+  items.forEach((e, idx) => {
+    const id  = 'e_' + idx;
+    const t   = tier(e.m);
+    const pct = Math.min((e.m / META) * 100, 100).toFixed(1);
+    const faltam = (META - e.m).toFixed(1);
+    const sessoes = Math.ceil((META - e.m) / 5);
+    const isOpen = openId === e.n;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'school-wrap';
+    wrap.innerHTML = `
+      <div class="school-item ${isOpen?'open':''}" id="item_${id}" onclick="toggle('${e.n.replace(/'/g,"\\'")}', '${id}')">
+        <div class="school-dot dot-${t}"></div>
+        <div class="school-name">${toTitle(e.n)}</div>
+        <div class="bar-wrap"><div class="bar-fill bar-${t}" style="width:${pct}%"></div></div>
+        <div class="school-min min-${t}">${e.m.toFixed(1)}<span style="font-size:10px;font-weight:600"> min</span></div>
+        <div class="chevron">▾</div>
+      </div>
+      <div class="school-detail ${isOpen?'open':''}" id="det_${id}">
+        <div class="detail-row">
+          <strong>${toTitle(e.n)}</strong><br>
+          Matrículas: <strong>${e.mat}</strong> &nbsp;·&nbsp;
+          Tempo atual: <span class="hl-${t}">${e.m.toFixed(1)} min/aluno/semana</span><br>
+          Meta: <strong>${META} min</strong> &nbsp;·&nbsp;
+          Faltam: <span class="hl-${t}">${faltam} min por aluno</span>
+          <div class="progress-week">
+            <div class="pw-label">
+              <span>0 min</span>
+              <span style="color:var(--${t})">${e.m.toFixed(1)} min atuais</span>
+              <span>25 min (meta)</span>
+            </div>
+            <div class="pw-track">
+              <div class="pw-fill bar-${t}" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-tip">
+          💡 Apenas +${sessoes} sessão${sessoes!==1?'s':''} de ~5 min já fariam a diferença esta semana.
+        </div>
+      </div>`;
+    list.appendChild(wrap);
+  });
+}
+
+function toggle(nome, id){
+  const item = document.getElementById('item_' + id);
+  const det  = document.getElementById('det_'  + id);
+
+  if(openId === nome){
+    openId = null;
+    item.classList.remove('open');
+    det.classList.remove('open');
+  } else {
+    // fecha anterior
+    document.querySelectorAll('.school-item.open').forEach(el=>el.classList.remove('open'));
+    document.querySelectorAll('.school-detail.open').forEach(el=>el.classList.remove('open'));
+    openId = nome;
+    item.classList.add('open');
+    det.classList.add('open');
+  }
+}
+
+renderList();
+</script>
+</body>
+</html>
